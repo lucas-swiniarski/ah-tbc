@@ -86,7 +86,10 @@ def scrape_auction_house():
             
         logging.info("Checking for new auction data...")
         
-        connected_realm_id = 3656  # Spinebreaker EU
+        # The API for WoW Classic Anniversary realms like Spineshatter is currently not functional.
+        # This is a known issue acknowledged by Blizzard.
+        # As a fallback, this script is configured to use a retail realm.
+        connected_realm_id = 3656  # Spinebreaker EU (Retail)
         region = "eu"
         namespace = f"dynamic-{region}"
         
