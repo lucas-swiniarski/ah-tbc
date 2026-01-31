@@ -15,15 +15,15 @@ def get_tsm_access_token():
         return None
 
     auth_url = "https://auth.tradeskillmaster.com/oauth2/token"
-    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    headers = {"Content-Type": "application/json"}
     data = {
-        "client_id": tsm_api_key,
-        "grant_type": "api_key",
-        "scope": "app:realm-api",
+        "client_id": "c260f00d-1071-409a-992f-dda2e5498536",
+        "grant_type": "api_token",
+        "scope": "app:realm-api app:pricing-api",
         "token": tsm_api_key,
     }
     try:
-        response = requests.post(auth_url, headers=headers, data=data)
+        response = requests.post(auth_url, headers=headers, json=data)
         response.raise_for_status()
         return response.json().get("access_token")
     except requests.exceptions.RequestException as e:
@@ -62,8 +62,8 @@ def get_tsm_realms(token, region_id):
         logging.error(f"Error getting TSM realms: {e}")
         return None
 
-def find_tsm_realm(realm_name):
-    """Finds a realm in the TSM database."""
+def find_tsm_realm(realm_id):
+    """Finds a realm in the TSM database by ID."""
     token = get_tsm_access_token()
     if not token:
         return
@@ -78,12 +78,12 @@ def find_tsm_realm(realm_name):
             if not realms:
                 continue
             for realm in realms:
-                if realm_name.lower() in realm['name'].lower():
+                if realm['realmId'] == realm_id:
                     logging.info(f"Found TSM realm: {realm}")
                     return realm
     
-    logging.warning(f"TSM realm '{realm_name}' not found.")
+    logging.warning(f"TSM realm with id '{realm_id}' not found.")
     return None
 
 if __name__ == "__main__":
-    find_tsm_realm("Spineshatter")
+    find_tsm_realm(5216)
